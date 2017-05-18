@@ -14,4 +14,63 @@ It's a straight Visual Studio 2015 solution file. I've used [Costura.Fody](https
 
 ### Throughput
 
+```
+vsts.metrics.exe throughput --help
+
+VstsMetrics 1.0.0.0
+Copyright ©  2017
+
+  -d, --doneState       (Default: Done) The work item state you project is
+                        using to indicate a work item is 'Done'.
+
+  -u, --projectUrl      Required. The URL to the TFS/VSTS project collection.
+                        E.g. for VSTS: https://{your-account}.visualstudio.com
+
+  -t, --pat             Required. Your personal authentication token. Used to
+                        authenticate to the VSTS REST API.
+
+  -p, --projectName     Required. The name of the team project you want to
+                        query.
+
+  -q, --query           Required. The full path to the query that will return
+                        the work items you want to gather metrics on.
+
+  -o, --outputFormat    (Default: Pretty) Valid output formats are Pretty, JSON
+                        and CSV.
+```
+
 ### Cycle Time
+
+```
+vsts.metrics.exe cycleTime --help
+
+VstsMetrics 1.0.0.0
+Copyright ©  2017
+
+  -i, --initialState    The state that work items leave to begin a cycle of
+                        work.
+
+  -e, --endState        The work item state that is the end of the work cycle.
+
+  -x, --strict          (Default: False) Controls how the start time of a work
+                        item is calculated. When --strict is specified, the
+                        first state transition out of --initialState is used,
+                        otherwise the last state transition out of the
+                        --initialState is used as the start time.
+
+  -u, --projectUrl      Required. The URL to the TFS/VSTS project collection.
+                        E.g. for VSTS: https://{your-account}.visualstudio.com
+
+  -t, --pat             Required. Your personal authentication token. Used to
+                        authenticate to the VSTS REST API.
+
+  -p, --projectName     Required. The name of the team project you want to
+                        query.
+
+  -q, --query           Required. The full path to the query that will return
+                        the work items you want to gather metrics on.
+
+  -o, --outputFormat    (Default: Pretty) Valid output formats are Pretty, JSON
+                        and CSV.
+
+```
