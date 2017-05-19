@@ -14,16 +14,16 @@ namespace VstsMetrics.Commands.CycleTime
 
         public DateTime EndTime { get; private set; }
 
-        public double AbsoluteCycleTimeInHours
+        public double ElapsedCycleTimeInHours
         {
-            get { return Math.Round(EndTime.Subtract(StartTime).TotalHours, 2); }
+            get { return Math.Round(GetElapsedTimeExcludingWeekendsBetween(StartTime, EndTime).TotalHours, 2); }
         }
 
-        public double BusinessHoursCycleTimeInHours
+        public double ApproximateWorkingCycleTimeInHours
         {
             get
             {
-                return Math.Round(GetWorkingTimeBetween(StartTime, EndTime).TotalHours, 2);               
+                return Math.Round(GetElapsedWorkingTimeBetween(StartTime, EndTime).TotalHours, 2);               
             }
         }
 
@@ -37,21 +37,45 @@ namespace VstsMetrics.Commands.CycleTime
             EndTime = endTime;
         }
 
-        private TimeSpan GetWorkingTimeBetween(DateTime start, DateTime end)
+        private TimeSpan GetElapsedTimeExcludingWeekendsBetween(DateTime start, DateTime end)
         {
-            //Consider making the 'weekend' days and working hours command line inputs.
-            int count = 0;
-            for (var i = start; i < end; i = i.AddMinutes(1))
+            return CountTimeBetween(start, end, NotTheWeekend);
+        }
+
+        private TimeSpan GetElapsedWorkingTimeBetween(DateTime start, DateTime end)
+        {
+            return CountTimeBetween(start, end, OnlyWorkingHoursCount);
+        }
+
+        private TimeSpan CountTimeBetween(DateTime start, DateTime end, Func<DateTime, bool> shouldThisMinuteCount)
+        {
+            var count = 0;
+            for (var dateTime = start; dateTime < end; dateTime = dateTime.AddMinutes(1))
             {
-                if (i.DayOfWeek != DayOfWeek.Saturday && i.DayOfWeek != DayOfWeek.Sunday)
-                {
-                    if (i.TimeOfDay.Hours >= 8 && i.TimeOfDay.Hours < 17)
-                    {
-                        count++;
-                    }
-                }
+                if (shouldThisMinuteCount(dateTime))
+                    count++;
             }
-            return TimeSpan.FromMinutes(count);  
+            return TimeSpan.FromMinutes(count);
+        }
+
+        private bool OnlyWorkingHoursCount(DateTime dateTime)
+        {
+            return NotTheWeekend(dateTime) && (ItIsBeforeLunch(dateTime) || ItIsAfterLunch(dateTime));
+        }
+
+        private bool NotTheWeekend(DateTime dateTime)
+        {
+            return (dateTime.DayOfWeek != DayOfWeek.Saturday && dateTime.DayOfWeek != DayOfWeek.Sunday);
+        }
+
+        private static bool ItIsAfterLunch(DateTime dateTime)
+        {
+            return dateTime.TimeOfDay.Hours >= 13 && dateTime.TimeOfDay.Hours < 17;
+        }
+        
+        private static bool ItIsBeforeLunch(DateTime dateTime)
+        {
+            return dateTime.TimeOfDay.Hours >= 8 && dateTime.TimeOfDay.Hours < 12;
         }
     }
 }
