@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MathNet.Numerics.Statistics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -88,7 +89,20 @@ namespace VstsMetrics.Commands.CycleTime
             var elapsedAverage = cycleTimes.Average(ct => ct.ElapsedCycleTimeInHours);
             var workingAverage = cycleTimes.Average(ct => ct.ApproximateWorkingCycleTimeInHours);
 
-            return new[] { new WorkItemCycleTimeSummary(elapsedAverage, workingAverage) };
+            var elapsedMoe = cycleTimes.MarginOfError(ct => ct.ElapsedCycleTimeInHours);
+            var workingMoe = cycleTimes.MarginOfError(ct => ct.ApproximateWorkingCycleTimeInHours);
+
+            return new[] {
+                new WorkItemCycleTimeSummary("Elapsed", elapsedAverage, elapsedMoe),
+                new WorkItemCycleTimeSummary("Approximate Working Time", workingAverage, workingMoe)
+            };
+        }
+
+        private static double MarginOfError(this IEnumerable<WorkItemCycleTime> cycleTimes, Func<WorkItemCycleTime, double> getter)
+        {
+            return Statistics.PopulationStandardDeviation(cycleTimes.Select(getter))
+                    / Math.Sqrt(cycleTimes.Count())
+                    * 1.96;
         }
     }
 

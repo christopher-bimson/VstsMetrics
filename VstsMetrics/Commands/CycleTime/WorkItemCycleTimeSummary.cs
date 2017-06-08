@@ -2,29 +2,17 @@
 {
     public class WorkItemCycleTimeSummary
     {
-        private double _elapsedAverage;
-        private double _workingAverage;
 
-        public WorkItemCycleTimeSummary(double elapsedAverage, double workingAverage)
+
+        public WorkItemCycleTimeSummary(string v, double average, double moe)
         {
-            this._elapsedAverage = elapsedAverage;
-            this._workingAverage = workingAverage;
+            CycleTime = v;
+            AverageInHours = average;
+            MarginOfError = moe;
         }
 
-        public string AverageElapsedCycleTimeInHours
-        {
-            get
-            {
-                return _elapsedAverage.ToString();
-            }
-        }
-
-        public string AverageApproximateWorkingCycleTimeInHours
-        {
-            get
-            {
-                return _workingAverage.ToString();
-            }
-        }
+        public string CycleTime { get; private set; }
+        public double AverageInHours { get; private set; }
+        public double MarginOfError { get; private set; }
     }
 }
