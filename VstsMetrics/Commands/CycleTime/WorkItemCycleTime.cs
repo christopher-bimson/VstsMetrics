@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace VstsMetrics.Commands.CycleTime
 {
@@ -78,4 +80,16 @@ namespace VstsMetrics.Commands.CycleTime
             return dateTime.TimeOfDay.Hours >= 8 && dateTime.TimeOfDay.Hours < 12;
         }
     }
+
+    public static class WorkItemCycleTimeExtensions
+    {
+        public static IEnumerable<WorkItemCycleTimeSummary> Summarise(this IEnumerable<WorkItemCycleTime> cycleTimes)
+        {
+            var elapsedAverage = cycleTimes.Average(ct => ct.ElapsedCycleTimeInHours);
+            var workingAverage = cycleTimes.Average(ct => ct.ApproximateWorkingCycleTimeInHours);
+
+            return new[] { new WorkItemCycleTimeSummary(elapsedAverage, workingAverage) };
+        }
+    }
+
 }

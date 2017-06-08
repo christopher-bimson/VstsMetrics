@@ -17,6 +17,12 @@ namespace VstsMetrics.Commands.CycleTime
             "otherwise the last state transition out of the --initialState is used as the start time.")]
         public bool Strict { get; set; }
 
+        [Option('s', "summary", Required = false, DefaultValue = true, 
+            HelpText = "When this flag is set, output is a high level summary of the work item cycle." +
+            "When not set, a more detailed report on work item cycle time is produced. This is useful " +
+            "for more detailed analysis in another tool.")]
+        public bool Summary { get; set; }
+
         public override async Task Execute()
         { 
             var witClient = await GetWorkItemTrackingClient();
@@ -27,7 +33,10 @@ namespace VstsMetrics.Commands.CycleTime
             var calculator = new WorkItemCycleTimeAggregator(InitialState, ToState, Strict, witClient);
             var cycleTimes = await calculator.AggregateAsync(workItemReferences);
 
-            Renderer.Render(cycleTimes);            
+            if (Summary)
+                Renderer.Render(cycleTimes.Summarise());
+            else
+                Renderer.Render(cycleTimes);            
         }
     }
 }
