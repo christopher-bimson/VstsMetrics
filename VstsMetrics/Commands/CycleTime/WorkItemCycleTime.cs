@@ -100,6 +100,7 @@ namespace VstsMetrics.Commands.CycleTime
 
         private static double MarginOfError(this IEnumerable<WorkItemCycleTime> cycleTimes, Func<WorkItemCycleTime, double> getter)
         {
+            // http://www.dummies.com/education/math/statistics/how-to-calculate-the-margin-of-error-for-a-sample-mean/
             return Statistics.PopulationStandardDeviation(cycleTimes.Select(getter))
                     / Math.Sqrt(cycleTimes.Count())
                     * 1.96;
