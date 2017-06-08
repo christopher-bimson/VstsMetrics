@@ -14,6 +14,7 @@ namespace VstsMetrics.Renderers
             {
                 table.Columns[i] = table.Columns[i].ToString().PascalCaseToTitleCase();
             }
+            table.Options.EnableCount = false;
             table.Write();
         }
     }
