@@ -254,6 +254,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\Command.cs" />
+    <Compile Include="Commands\CycleTime\WorkItemCycleTimeExtensions.cs" />
     <Compile Include="Commands\CycleTime\WorkItemCycleTimeSummary.cs" />
     <Compile Include="Renderers\CsvRenderer.cs" />
     <Compile Include="Commands\CycleTime\CycleTimeCommand.cs" />
