@@ -16,7 +16,8 @@ namespace VstsMetrics.Commands
             {
                 { MetricOutputFormat.Pretty, new PrettyPrintRenderer() },
                 { MetricOutputFormat.Csv, new CsvRenderer(Console.Out) },
-                { MetricOutputFormat.Json, new JsonRenderer(Console.Out) }
+                { MetricOutputFormat.Json, new JsonRenderer(Console.Out) },
+                { MetricOutputFormat.Markdown, new MarkdownRenderer() }
             };
 
 

@@ -4,6 +4,7 @@ namespace VstsMetrics.Commands
     {
         Pretty,
         Json,
-        Csv
+        Csv,
+        Markdown
     }
 }
