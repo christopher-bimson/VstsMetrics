@@ -38,7 +38,7 @@ namespace VstsMetrics.Commands
         public string Query { get; set; }
 
         [Option('o', "outputFormat", Required = false, DefaultValue = MetricOutputFormat.Pretty, 
-            HelpText = "Valid output formats are Pretty, JSON and CSV.")]
+            HelpText = "Valid output formats are Pretty, JSON, CSV and Markdown.")]
         public MetricOutputFormat OutputFormat { get; set; }
 
         protected IOutputRenderer Renderer
