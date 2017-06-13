@@ -35,8 +35,8 @@ Copyright ©  2017
   -q, --query           Required. The full path to the query that will return
                         the work items you want to gather metrics on.
 
-  -o, --outputFormat    (Default: Pretty) Valid output formats are Pretty, JSON
-                        and CSV.
+  -o, --outputFormat    (Default: Pretty) Valid output formats are Pretty,
+                        JSON, CSV and Markdown.
 ```
 
 ### Cycle Time
@@ -58,6 +58,12 @@ Copyright ©  2017
                         otherwise the last state transition out of the
                         --initialState is used as the start time.
 
+  -d, --detailed        (Default: False) When this flag is set, a detailed
+                        report on work item cycle time is produced. This is
+                        useful for more detailed analysis in another tool. When
+                        not set, output is a high level summary of the work
+                        item cycle time.
+
   -u, --projectUrl      Required. The URL to the TFS/VSTS project collection.
                         E.g. for VSTS: https://{your-account}.visualstudio.com
 
@@ -70,7 +76,7 @@ Copyright ©  2017
   -q, --query           Required. The full path to the query that will return
                         the work items you want to gather metrics on.
 
-  -o, --outputFormat    (Default: Pretty) Valid output formats are Pretty, JSON
-                        and CSV.
+  -o, --outputFormat    (Default: Pretty) Valid output formats are Pretty,
+                        JSON, CSV and Markdown.
 
 ```
