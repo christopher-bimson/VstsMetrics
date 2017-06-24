@@ -37,6 +37,11 @@ namespace VstsMetrics.Commands
             HelpText = "The full path to the query that will return the work items you want to gather metrics on.")]
         public string Query { get; set; }
 
+        [Option('s', "since", Required = false, DefaultValue = null,
+            HelpText = "Provide a date and only Work Items that were 'done' or transitioned " +
+            "to 'end state' after this date will be included.")]
+        public DateTime? Since { get; set; }
+
         [Option('o', "outputFormat", Required = false, DefaultValue = MetricOutputFormat.Pretty, 
             HelpText = "Valid output formats are Pretty, JSON, CSV and Markdown.")]
         public MetricOutputFormat OutputFormat { get; set; }

@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using CommandLine;
+using System.Linq;
 
 namespace VstsMetrics.Commands.CycleTime
 {
@@ -31,6 +32,9 @@ namespace VstsMetrics.Commands.CycleTime
 
             var calculator = new WorkItemCycleTimeAggregator(InitialState, ToState, Strict, witClient);
             var cycleTimes = await calculator.AggregateAsync(workItemReferences);
+
+            if (Since.HasValue)
+                cycleTimes = cycleTimes.Where(ct => ct.EndTime >= Since.Value);
 
             if (Detailed)
                 Renderer.Render(cycleTimes);      

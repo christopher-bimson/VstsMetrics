@@ -20,6 +20,9 @@ namespace VstsMetrics.Commands.Throughput
             var calculator = new WorkItemDoneDateAggregator(witClient, DoneState);
             var workItemDoneDates = (await calculator.AggregateAsync(workItemReferences));
 
+            if (Since.HasValue)
+                workItemDoneDates = workItemDoneDates.Where(ct => ct.DoneDate >= Since.Value);
+
             var weeklyThroughput = 
                 workItemDoneDates
                     .GroupBy(t => t.DoneDate.StartOfWeek(DayOfWeek.Monday))
