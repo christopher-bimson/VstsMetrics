@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
 using WorkItemStateTransition = VstsMetrics.Commands.CycleTime.WorkItemStateTransition;
 
@@ -30,12 +28,6 @@ namespace VstsMetrics.Extensions
             if (workItem.Fields.ContainsKey("System.Tags"))
                 return workItem.Fields["System.Tags"].ToString();
             return String.Empty;
-        }
-
-        public static async Task<IEnumerable<WorkItem>> AllRevisionsAsync(this WorkItem workItem,
-            WorkItemTrackingHttpClient workItemClient)
-        {
-            return await workItemClient.GetRevisionsAsync(workItem.Id.Value);
         }
 
         public static DateTime? FirstStateTransitionFrom(this IEnumerable<WorkItem> workItemRevisions, string state)

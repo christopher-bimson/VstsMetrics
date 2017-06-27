@@ -2,7 +2,9 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using CommandLine;
+using VstsMetrics.Abstractions;
 using VstsMetrics.Extensions;
+using VstsMetrics.Renderers;
 
 namespace VstsMetrics.Commands.Throughput
 {
@@ -13,15 +15,11 @@ namespace VstsMetrics.Commands.Throughput
 
         public override async Task Execute()
         {
-            var witClient = await GetWorkItemTrackingClient();
-            var queryItem = await witClient.GetQueryAsync(ProjectName, Query);
-            var workItemReferences = (await witClient.QueryByIdAsync(queryItem.Id)).WorkItems;
+            var workItemClient = WorkItemClientFactory.Create(ProjectCollectionUrl, PatToken);
+            var workItemReferences = await workItemClient.QueryWorkItemsAsync(ProjectName, Query);
 
-            var calculator = new WorkItemDoneDateAggregator(witClient, DoneState);
-            var workItemDoneDates = (await calculator.AggregateAsync(workItemReferences));
-
-            if (Since.HasValue)
-                workItemDoneDates = workItemDoneDates.Where(ct => ct.DoneDate >= Since.Value);
+            var calculator = new WorkItemDoneDateAggregator(workItemClient, DoneState);
+            var workItemDoneDates = await calculator.AggregateAsync(workItemReferences);
 
             var weeklyThroughput = 
                 workItemDoneDates
@@ -29,7 +27,12 @@ namespace VstsMetrics.Commands.Throughput
                     .OrderBy(t => t.Key)
                     .Select(g => new {WeekBeginning = g.Key, Throughput = g.Count()});
 
-            Renderer.Render(weeklyThroughput);
+            OutputRendererFactory.Create(OutputFormat).Render(weeklyThroughput);
+        }
+
+        public ThroughputCommand(IWorkItemClientFactory workItemClientFactory, IOutputRendererFactory outputRendererFactory) 
+            : base(workItemClientFactory, outputRendererFactory)
+        {
         }
     }
 }

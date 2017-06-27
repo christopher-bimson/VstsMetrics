@@ -1,26 +1,13 @@
 using System;
 using System.Threading.Tasks;
 using CommandLine;
-using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
-using Microsoft.VisualStudio.Services.Common;
-using Microsoft.VisualStudio.Services.WebApi;
-using System.Collections.Generic;
+using VstsMetrics.Abstractions;
 using VstsMetrics.Renderers;
 
 namespace VstsMetrics.Commands
 {
     public abstract class Command : ICommand
     {
-        private static readonly IDictionary<MetricOutputFormat, IOutputRenderer> OutputRendererFactory
-            = new Dictionary<MetricOutputFormat, IOutputRenderer>
-            {
-                { MetricOutputFormat.Pretty, new PrettyPrintRenderer() },
-                { MetricOutputFormat.Csv, new CsvRenderer(Console.Out) },
-                { MetricOutputFormat.Json, new JsonRenderer(Console.Out) },
-                { MetricOutputFormat.Markdown, new MarkdownRenderer() }
-            };
-
-
         [Option('u', "projectUrl", Required = true,
             HelpText =
                 "The URL to the TFS/VSTS project collection. E.g. for VSTS: https://{your-account}.visualstudio.com")]
@@ -46,18 +33,22 @@ namespace VstsMetrics.Commands
             HelpText = "Valid output formats are Pretty, JSON, CSV and Markdown.")]
         public MetricOutputFormat OutputFormat { get; set; }
 
-        protected IOutputRenderer Renderer
+        protected IWorkItemClientFactory WorkItemClientFactory { get; private set; }
+
+        protected IOutputRendererFactory OutputRendererFactory { get; private set; }
+
+        protected Command(IWorkItemClientFactory workItemClientFactory, IOutputRendererFactory outputRendererFactory)
         {
-            get { return OutputRendererFactory[OutputFormat]; }
+            if (workItemClientFactory == null)
+                throw new ArgumentNullException(nameof(workItemClientFactory));
+
+            if (outputRendererFactory == null)
+                throw new ArgumentNullException(nameof(outputRendererFactory));
+
+            WorkItemClientFactory = workItemClientFactory;
+            OutputRendererFactory = outputRendererFactory;
         }
 
         public abstract Task Execute();
-
-        protected async Task<WorkItemTrackingHttpClient> GetWorkItemTrackingClient()
-        {
-            var connection = new VssConnection(new Uri(ProjectCollectionUrl), new VssBasicCredential(string.Empty, PatToken));
-            var witClient = await connection.GetClientAsync<WorkItemTrackingHttpClient>();
-            return witClient;
-        }
     }
 }

@@ -1,6 +1,7 @@
+using System;
 using System.Threading.Tasks;
-using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
+using VstsMetrics.Abstractions;
 using VstsMetrics.Extensions;
 
 namespace VstsMetrics.Commands.Throughput
@@ -9,28 +10,31 @@ namespace VstsMetrics.Commands.Throughput
     {
         private readonly string _doneState;
 
-        public WorkItemDoneDateAggregator(WorkItemTrackingHttpClient workItemClient, string doneState, 
+        public WorkItemDoneDateAggregator(IWorkItemClient workItemClient, string doneState, 
             int batchSize = 50) : base(workItemClient, batchSize)
         {
             _doneState = doneState;
         }
 
-        protected override async Task<WorkItemDoneDate> AggregatorAsync(WorkItem workItem)
+        protected override async Task<WorkItemDoneDate> AggregatorAsync(WorkItem workItem, DateTime? sinceDate)
         {
             if (workItem?.Id == null)
                 return null;
 
-            var revisions = await workItem.AllRevisionsAsync(WorkItemClient);
+            var revisions = await WorkItemClient.GetWorkItemRevisionsAsync(workItem);
             var doneDate = revisions.LastStateTransitionTo(_doneState);
 
             if (doneDate == null)
                 return null;
 
-            return new WorkItemDoneDate
-            {
-                Id = workItem.Id.Value,
-                DoneDate = doneDate.Value
-            };
+            if (IsNewerThan(doneDate.Value, sinceDate))
+                return new WorkItemDoneDate
+                {
+                    Id = workItem.Id.Value,
+                    DoneDate = doneDate.Value
+                };
+
+            return null;
         }
     }
 }

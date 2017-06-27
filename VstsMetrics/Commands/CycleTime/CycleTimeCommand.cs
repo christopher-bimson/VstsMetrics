@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using CommandLine;
-using System.Linq;
+using VstsMetrics.Abstractions;
+using VstsMetrics.Renderers;
 
 namespace VstsMetrics.Commands.CycleTime
 {
@@ -24,22 +25,24 @@ namespace VstsMetrics.Commands.CycleTime
         public bool Detailed { get; set; }
 
         public override async Task Execute()
-        { 
-            var witClient = await GetWorkItemTrackingClient();
+        {
+            var workItemClient = WorkItemClientFactory.Create(ProjectCollectionUrl, PatToken);
 
-            var queryItem = await witClient.GetQueryAsync(ProjectName, Query);
-            var workItemReferences = (await witClient.QueryByIdAsync(queryItem.Id)).WorkItems;
+            var workItemReferences = await workItemClient.QueryWorkItemsAsync(ProjectName, Query);
 
-            var calculator = new WorkItemCycleTimeAggregator(InitialState, ToState, Strict, witClient);
+            var calculator = new WorkItemCycleTimeAggregator(InitialState, ToState, Strict, workItemClient);
             var cycleTimes = await calculator.AggregateAsync(workItemReferences);
 
-            if (Since.HasValue)
-                cycleTimes = cycleTimes.Where(ct => ct.EndTime >= Since.Value);
-
+            var renderer = OutputRendererFactory.Create(OutputFormat);
             if (Detailed)
-                Renderer.Render(cycleTimes);      
+                renderer.Render(cycleTimes);      
             else
-                Renderer.Render(cycleTimes.Summarise());
+                renderer.Render(cycleTimes.Summarise());
+        }
+
+        public CycleTimeCommand(IWorkItemClientFactory workItemClientFactory, IOutputRendererFactory outputRendererFactory) 
+            : base(workItemClientFactory, outputRendererFactory)
+        {
         }
     }
 }

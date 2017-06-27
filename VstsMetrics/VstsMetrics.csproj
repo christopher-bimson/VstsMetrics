@@ -253,6 +253,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Abstractions\IWorkItemClient.cs" />
+    <Compile Include="Abstractions\IWorkItemClientFactory.cs" />
+    <Compile Include="Adapters\WorkItemClientAdapter.cs" />
+    <Compile Include="Adapters\WorkItemClientFactory.cs" />
     <Compile Include="Commands\Command.cs" />
     <Compile Include="Commands\CycleTime\WorkItemCycleTimeExtensions.cs" />
     <Compile Include="Commands\CycleTime\WorkItemCycleTimeSummary.cs" />
@@ -261,10 +265,12 @@
     <Compile Include="Commands\CycleTime\CycleTimeCommand.cs" />
     <Compile Include="Commands\ICommand.cs" />
     <Compile Include="Renderers\IOutputRenderer.cs" />
+    <Compile Include="Renderers\IOutputRendererFactory.cs" />
     <Compile Include="Renderers\JsonRenderer.cs" />
     <Compile Include="Commands\MetricOutputFormat.cs" />
     <Compile Include="Commands\Options.cs" />
     <Compile Include="Renderers\MarkdownRenderer.cs" />
+    <Compile Include="Renderers\OutputRendererFactory.cs" />
     <Compile Include="Renderers\PrettyPrintRenderer.cs" />
     <Compile Include="Commands\Throughput\ThroughputCommand.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
