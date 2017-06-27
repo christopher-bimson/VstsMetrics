@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using CommandLine;
 using VstsMetrics.Abstractions;
@@ -12,6 +13,10 @@ namespace VstsMetrics.Commands.CycleTime
             
         [Option('e', "endState", HelpText = "The work item state that is the end of the work cycle.")]
         public string ToState { get; set; }
+
+        [Option('s', "since", Required = false, DefaultValue = null,
+            HelpText = "Only calculate the cycle time for work items that entered the end state on or after this date.")]
+        public DateTime? Since { get; set; }
 
         [Option('x', "strict", Required = false, DefaultValue = false, 
             HelpText = "Controls how the start time of a work item is calculated. " +

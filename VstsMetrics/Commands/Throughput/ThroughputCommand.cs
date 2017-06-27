@@ -13,6 +13,9 @@ namespace VstsMetrics.Commands.Throughput
         [Option('d', "doneState", DefaultValue = "Done", HelpText = "The work item state you project is using to indicate a work item is 'Done'.")]
         public string DoneState { get; set; }
 
+        [Option('s', "since", Required = false, DefaultValue = null, HelpText = "Only calculate throuput for work items that entered the done state on or after this date.")]
+        public DateTime? Since { get; set; }
+
         public override async Task Execute()
         {
             var workItemClient = WorkItemClientFactory.Create(ProjectCollectionUrl, PatToken);
