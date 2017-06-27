@@ -27,7 +27,7 @@ namespace VstsMetrics.Commands.Throughput
             var weeklyThroughput = 
                 workItemDoneDates
                     .GroupBy(t => t.DoneDate.StartOfWeek(DayOfWeek.Monday))
-                    .OrderBy(t => t.Key)
+                    .OrderByDescending(t => t.Key)
                     .Select(g => new {WeekBeginning = g.Key, Throughput = g.Count()});
 
             OutputRendererFactory.Create(OutputFormat).Render(weeklyThroughput);
