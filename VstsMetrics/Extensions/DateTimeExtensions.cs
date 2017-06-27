@@ -13,5 +13,13 @@ namespace VstsMetrics.Extensions
             }
             return dt.AddDays(-1 * diff).Date;
         }
+
+        public static bool IsNewerThan(this DateTime date, DateTime? sinceDate)
+        {
+            if (sinceDate == null)
+                return true;
+
+            return date >= sinceDate;
+        }
     }
 }

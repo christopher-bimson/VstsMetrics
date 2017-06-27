@@ -50,13 +50,5 @@ namespace VstsMetrics.Commands
         {
             return workItemIds.Length == BatchSize;
         }
-
-        protected bool IsNewerThan(DateTime stateTransitionDate, DateTime? sinceDate)
-        {
-            if (sinceDate == null)
-                return true;
-
-            return stateTransitionDate >= sinceDate;
-        }
     }
 }

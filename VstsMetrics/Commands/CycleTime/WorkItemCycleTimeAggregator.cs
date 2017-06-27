@@ -36,7 +36,7 @@ namespace VstsMetrics.Commands.CycleTime
             var endTime = revisions.LastStateTransitionTo(_toState);
 
 
-            if (startTime != null && endTime != null && IsNewerThan(endTime.Value, sinceDate))
+            if (startTime != null && endTime != null && endTime.Value.IsNewerThan(sinceDate))
                 return new WorkItemCycleTime(workItem.Id.Value, workItem.Title(),  
                     workItem.Tags(), startTime.Value, endTime.Value);
 

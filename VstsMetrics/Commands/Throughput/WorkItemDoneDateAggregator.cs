@@ -24,10 +24,7 @@ namespace VstsMetrics.Commands.Throughput
             var revisions = await WorkItemClient.GetWorkItemRevisionsAsync(workItem);
             var doneDate = revisions.LastStateTransitionTo(_doneState);
 
-            if (doneDate == null)
-                return null;
-
-            if (IsNewerThan(doneDate.Value, sinceDate))
+            if (doneDate != null && doneDate.Value.IsNewerThan(sinceDate))
                 return new WorkItemDoneDate
                 {
                     Id = workItem.Id.Value,
