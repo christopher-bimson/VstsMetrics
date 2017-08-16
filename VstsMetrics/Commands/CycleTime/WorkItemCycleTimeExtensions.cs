@@ -24,6 +24,7 @@ namespace VstsMetrics.Commands.CycleTime
         private static double MarginOfError(this IEnumerable<WorkItemCycleTime> cycleTimes, Func<WorkItemCycleTime, double> getter)
         {
             // http://www.dummies.com/education/math/statistics/how-to-calculate-the-margin-of-error-for-a-sample-mean/
+            // If the central limit theorem does not apply, then this will be incorrect. This should be exposed somehow at some point.
             return cycleTimes.Select(getter).PopulationStandardDeviation()
                    / Math.Sqrt(cycleTimes.Count())
                    * 1.96;
