@@ -260,6 +260,10 @@
     <Compile Include="Commands\Command.cs" />
     <Compile Include="Commands\CycleTime\WorkItemCycleTimeExtensions.cs" />
     <Compile Include="Commands\CycleTime\WorkItemCycleTimeSummary.cs" />
+    <Compile Include="Commands\StateTransitions\StateTransitionsCommand.cs" />
+    <Compile Include="Commands\StateTransitions\WorkItemStateTransition.cs" />
+    <Compile Include="Commands\StateTransitions\WorkItemStateTransitionAggregator.cs" />
+    <Compile Include="Commands\StateTransitions\WorkItemStateTransitions.cs" />
     <Compile Include="Renderers\ConsoleTablesRenderer.cs" />
     <Compile Include="Renderers\CsvRenderer.cs" />
     <Compile Include="Commands\CycleTime\CycleTimeCommand.cs" />
@@ -274,7 +278,7 @@
     <Compile Include="Renderers\PrettyPrintRenderer.cs" />
     <Compile Include="Commands\Throughput\ThroughputCommand.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="Commands\CycleTime\WorkItemStateTransition.cs" />
+    <Compile Include="Commands\CycleTime\StateTransition.cs" />
     <Compile Include="Commands\CycleTime\WorkItemCycleTime.cs" />
     <Compile Include="Commands\Throughput\WorkItemDoneDateAggregator.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />

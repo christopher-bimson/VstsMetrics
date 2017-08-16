@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
-using WorkItemStateTransition = VstsMetrics.Commands.CycleTime.WorkItemStateTransition;
+using VstsMetrics.Commands.CycleTime;
 
 namespace VstsMetrics.Extensions
 {
@@ -32,7 +32,7 @@ namespace VstsMetrics.Extensions
 
         public static DateTime? FirstStateTransitionFrom(this IEnumerable<WorkItem> workItemRevisions, string state)
         {
-            var stateTransitions = GetWorkItemStateTransitions(workItemRevisions);
+            var stateTransitions = StateTransitions(workItemRevisions);
             return
                 stateTransitions
                     .FirstOrDefault(t => t.From.Equals(state, StringComparison.InvariantCultureIgnoreCase))?.Date;
@@ -40,7 +40,7 @@ namespace VstsMetrics.Extensions
 
         public static DateTime? LastStateTransitionFrom(this IEnumerable<WorkItem> workItemRevisions, string state)
         {
-            var stateTransitions = GetWorkItemStateTransitions(workItemRevisions);
+            var stateTransitions = StateTransitions(workItemRevisions);
             return
                 stateTransitions
                     .LastOrDefault(t => t.From.Equals(state, StringComparison.InvariantCultureIgnoreCase))?.Date;
@@ -48,19 +48,19 @@ namespace VstsMetrics.Extensions
 
         public static DateTime? LastStateTransitionTo(this IEnumerable<WorkItem> workItemRevisions, string state)
         {
-            var stateTransitions = GetWorkItemStateTransitions(workItemRevisions);
+            var stateTransitions = StateTransitions(workItemRevisions);
             return
                 stateTransitions
                     .LastOrDefault(t => t.To.Equals(state, StringComparison.InvariantCultureIgnoreCase))?.Date;
         }
 
-        private static IEnumerable<WorkItemStateTransition> GetWorkItemStateTransitions(IEnumerable<WorkItem> workItemRevisions)
+        public static IEnumerable<StateTransition> StateTransitions(this IEnumerable<WorkItem> workItemRevisions)
         {
             workItemRevisions = workItemRevisions.OrderBy(wi => wi.Rev);
             GuardAllRevisionsOfSameWorkItem(workItemRevisions);
 
             string lastState = null;
-            var stateTransitions = new List<WorkItemStateTransition>();
+            var stateTransitions = new List<StateTransition>();
             foreach (var revision in workItemRevisions)
             {
                 if (lastState == null)
@@ -71,7 +71,7 @@ namespace VstsMetrics.Extensions
 
                 if (!revision.State().Equals(lastState, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    stateTransitions.Add(new WorkItemStateTransition(lastState, revision.State(), revision.ChangedDate()));
+                    stateTransitions.Add(new StateTransition(lastState, revision.State(), revision.ChangedDate()));
                     lastState = revision.State();
                 }
             }

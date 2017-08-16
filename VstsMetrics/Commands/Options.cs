@@ -2,6 +2,7 @@
 using CommandLine.Text;
 using VstsMetrics.Abstractions;
 using VstsMetrics.Commands.CycleTime;
+using VstsMetrics.Commands.StateTransitions;
 using VstsMetrics.Commands.Throughput;
 using VstsMetrics.Renderers;
 
@@ -13,6 +14,7 @@ namespace VstsMetrics.Commands
         {
             ThroughputCommand = new ThroughputCommand(workItemClientFactory, outputRendererFactory);
             CycleTimeCommand = new CycleTimeCommand(workItemClientFactory, outputRendererFactory);
+            StateTransitionsCommand = new StateTransitionsCommand(workItemClientFactory, outputRendererFactory);
         }
 
         [VerbOption("throughput", HelpText = "Calculates work item throughput from a predefined work item query.")]
@@ -20,6 +22,9 @@ namespace VstsMetrics.Commands
 
         [VerbOption("cycleTime", HelpText = "Calculates work item cycle time from a predefined work item query.")]
         public CycleTimeCommand CycleTimeCommand { get; set; }
+
+        [VerbOption("stateTransitions", HelpText = "Calculates all state transitions for work items in a predefined work item query.")]
+        public StateTransitionsCommand StateTransitionsCommand { get; set; }
 
         [HelpVerbOption]
         public string GetUsage(string verb)
