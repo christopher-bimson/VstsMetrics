@@ -2,8 +2,6 @@
 {
     public class WorkItemCycleTimeSummary
     {
-
-
         public WorkItemCycleTimeSummary(string v, double average, double moe)
         {
             CycleTime = v;

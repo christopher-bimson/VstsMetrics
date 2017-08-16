@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
 using VstsMetrics.Abstractions;
@@ -22,7 +23,18 @@ namespace VstsMetrics.Commands.CycleTime
         protected override async Task<WorkItemCycleTime> AggregatorAsync(WorkItem workItem, DateTime? sinceDate)
         {
             var revisions = await WorkItemClient.GetWorkItemRevisionsAsync(workItem);
+            var startTime = CalculateStartOfCycle(revisions);
+            var endTime = revisions.LastStateTransitionTo(_toState);
 
+            if (startTime != null && endTime != null && endTime.Value.IsNewerThan(sinceDate))
+                return new WorkItemCycleTime(workItem.Id.Value, workItem.Title(),  
+                    workItem.Tags(), startTime.Value, endTime.Value);
+
+            return null;
+        }
+
+        private DateTime? CalculateStartOfCycle(IEnumerable<WorkItem> revisions)
+        {
             DateTime? startTime;
             if (_strict)
             {
@@ -32,15 +44,7 @@ namespace VstsMetrics.Commands.CycleTime
             {
                 startTime = revisions.LastStateTransitionFrom(_initialState);
             }
-
-            var endTime = revisions.LastStateTransitionTo(_toState);
-
-
-            if (startTime != null && endTime != null && endTime.Value.IsNewerThan(sinceDate))
-                return new WorkItemCycleTime(workItem.Id.Value, workItem.Title(),  
-                    workItem.Tags(), startTime.Value, endTime.Value);
-
-            return null;
+            return startTime;
         }
     }
 }

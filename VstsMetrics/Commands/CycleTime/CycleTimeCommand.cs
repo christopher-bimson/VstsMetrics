@@ -31,12 +31,12 @@ namespace VstsMetrics.Commands.CycleTime
 
         public override async Task Execute()
         {
-            var workItemClient = WorkItemClientFactory.Create(ProjectCollectionUrl, PatToken);
+            var workItemClient = await WorkItemClientFactory.Create(ProjectCollectionUrl, PatToken);
 
             var workItemReferences = await workItemClient.QueryWorkItemsAsync(ProjectName, Query);
 
             var calculator = new WorkItemCycleTimeAggregator(InitialState, ToState, Strict, workItemClient);
-            var cycleTimes = await calculator.AggregateAsync(workItemReferences);
+            var cycleTimes = await calculator.AggregateAsync(workItemReferences, Since);
 
             var renderer = OutputRendererFactory.Create(OutputFormat);
             if (Detailed)

@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Globalization;
 using System.Threading.Tasks;
+using CommandLine;
 using Nito.AsyncEx;
+using VstsMetrics.Adapters;
 using VstsMetrics.Commands;
+using VstsMetrics.Renderers;
 
 namespace VstsMetrics
 {
@@ -25,8 +29,14 @@ namespace VstsMetrics
         {
             ICommand command = null;
 
-            var options = new Options();
-            if (!CommandLine.Parser.Default.ParseArguments(args, options,
+            var parser = new Parser(with =>
+            {
+                with.ParsingCulture = CultureInfo.CurrentCulture;
+                with.HelpWriter = Console.Out;
+            });
+
+            var options = new Options(new WorkItemClientFactory(), new OutputRendererFactory());
+            if (!parser.ParseArguments(args, options,
               (verb, subOptions) =>
               {
                   command = (ICommand)subOptions;

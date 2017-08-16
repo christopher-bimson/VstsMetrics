@@ -18,11 +18,11 @@ namespace VstsMetrics.Commands.Throughput
 
         public override async Task Execute()
         {
-            var workItemClient = WorkItemClientFactory.Create(ProjectCollectionUrl, PatToken);
+            var workItemClient = await WorkItemClientFactory.Create(ProjectCollectionUrl, PatToken);
             var workItemReferences = await workItemClient.QueryWorkItemsAsync(ProjectName, Query);
 
             var calculator = new WorkItemDoneDateAggregator(workItemClient, DoneState);
-            var workItemDoneDates = await calculator.AggregateAsync(workItemReferences);
+            var workItemDoneDates = await calculator.AggregateAsync(workItemReferences, Since);
 
             var weeklyThroughput = 
                 workItemDoneDates

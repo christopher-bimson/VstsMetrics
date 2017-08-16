@@ -1,7 +1,9 @@
+using System.Threading.Tasks;
+
 namespace VstsMetrics.Abstractions
 {
     public interface IWorkItemClientFactory
     {
-        IWorkItemClient Create(string projectCollectionUri, string patToken);
+        Task<IWorkItemClient> Create(string projectCollectionUri, string patToken);
     }
 }
